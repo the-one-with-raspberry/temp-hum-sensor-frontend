@@ -1,17 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpService } from './http.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-
-  tempCurrentCelsius = HttpService.prototype.getTempCelsius();
-  tempCurrentFaren = HttpService.prototype.getTempFaren();
-
-  humCurrent = HttpService.prototype.getHum();
-
-  ngOnInit(): void { }
 }

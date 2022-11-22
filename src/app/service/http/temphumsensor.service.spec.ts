@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { HttpService } from './http.service';
+import { TemphumsensorService } from './temphumsensor.service';
 
-describe('HttpService', () => {
-  let service: HttpService;
+describe('TemphumsensorService', () => {
+  let service: TemphumsensorService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(HttpService);
+    service = TestBed.inject(TemphumsensorService);
   });
 
   it('should be created', () => {

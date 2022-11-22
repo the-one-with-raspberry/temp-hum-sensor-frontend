@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'pimyhouse-temphumsensor'`, () => {
+  it(`should have as title 'temphumsensor'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('pimyhouse-temphumsensor');
+    expect(app.title).toEqual('temphumsensor');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('pimyhouse-temphumsensor app is running!');
+    expect(compiled.querySelector('.content span')?.textContent).toContain('temphumsensor app is running!');
   });
 });
