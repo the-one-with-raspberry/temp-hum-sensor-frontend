@@ -25,13 +25,13 @@ export class ReadingsComponent implements OnInit {
     var f = document.getElementById('tfcp');
     var h = document.getElementById('hcp');
     if (c) {
-      c.innerText = response.content.celsius.value;
+      c.innerText = response.content.celsius.value.toFixed(1);
     }
     if (f) {
-      f.innerText = response.content.farenheit.value;
+      f.innerText = response.content.farenheit.value.toFixed(1);
     }
     if (h) {
-      h.innerText = response.content.humidity.value;
+      h.innerText = response.content.humidity.value.toFixed(1);
     }
   }
 }
