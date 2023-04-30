@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TemphumsensorService } from '../service/http/temphumsensor.service';
+const quark = require('@berriz44/quark');
 
 @Component({
   selector: 'app-readings',
