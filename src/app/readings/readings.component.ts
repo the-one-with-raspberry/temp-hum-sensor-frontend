@@ -13,15 +13,15 @@ export class ReadingsComponent implements OnInit {
   constructor(private ths: TemphumsensorService) { }
 
   ngOnInit(): void {
-    this.getInfo();
+    this.getInfoC();
   }
 
-  getInfo() {
+  getInfoC() {
     this.ths.getInfo()
-      .subscribe(response => this.handleSuccessfulResponse(response));
+      .subscribe(response => this.handleSuccessfulResponseC(response));
   }
 
-  handleSuccessfulResponse(response: any) {
+  handleSuccessfulResponseC(response: any) {
     var c = document.getElementById('tccp');
     var f = document.getElementById('tfcp');
     var h = document.getElementById('hcp');
@@ -34,5 +34,12 @@ export class ReadingsComponent implements OnInit {
     if (h) {
       h.innerText = response.content.humidity.value.toFixed(1);
     }
+  }
+
+  getInfoH() {
+    this.ths.getHistInfo("").subscribe(res => this.handleSuccessfulResponseH(res));
+  }
+  handleSuccessfulResponseH(res: any) {
+    
   }
 }
