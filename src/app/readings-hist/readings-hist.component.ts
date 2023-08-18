@@ -17,7 +17,6 @@ export class ReadingsHistComponent implements OnInit {
 
   ngOnInit(): void {
     this.getInfoH();
-
   }
   getInfoH() {
     const checkedOpt = document.querySelector<HTMLInputElement>('input[name="timeselect"]:checked');
@@ -42,10 +41,7 @@ export class ReadingsHistComponent implements OnInit {
   }
   handleSuccessfulResponseH(res: any) {
     try {
-      const content = res.content;
-      const humArr: any[][] = content.humidity.value;
-      const tempArr: any[][] = content.celsius.value;
-      const farenArr: any[][] = content.farenheit.value;
+      const content: {celsius: number, fahrenheit: number, humidity: number, timestamp: string}[] = res.content;
       const selTime = (document.querySelector('input[name="timeselect"]:checked') as HTMLElement).dataset['value'];
       /**
        * @example dataset = arrTimes(60 * 60 * 24, 60 * 60);
@@ -55,15 +51,16 @@ export class ReadingsHistComponent implements OnInit {
        */
       function arrTimes(time: number, diff: number): HistoryArray {
         let out: HistoryArray = { hum: [], celsius: [], faren: [], dates: [] };
-        for (let i = 0; i < humArr.length; i++) {
-          if (time % diff == 0) {
-            out.hum.push(humArr[i][0]);
-            out.celsius.push(tempArr[i][0])
-            out.faren.push(farenArr[i][0])
-            out.dates.push(new Date(tempArr[i][1]))
-          } else if (i > time) {
+        for (let i = 0; i < content.length; i++) {
+          if (i > time) {
             break;
           }
+          if (time % diff == 0) {
+            out.hum.push(content[i].humidity);
+            out.celsius.push(content[i].celsius)
+            out.faren.push(content[i].fahrenheit)
+            out.dates.push(new Date(content[i].timestamp))
+          } 
         }
         return out;
       }
