@@ -8,13 +8,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './home/home.component'
 import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
+import { ErrorComponent } from './error/error.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ReadingsComponent,
     ReadingsHistComponent,
-    HomeComponent
+    HomeComponent,
+    ErrorComponent,
   ],
   imports: [
     HttpClientModule,

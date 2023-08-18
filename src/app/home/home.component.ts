@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { data } from '../login';
+import { loginData } from '../login';
 import { Router } from '@angular/router';
 
 @Component({
@@ -9,15 +9,11 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
 
+  data: {deviceId: string, username: string | null} = loginData;
+
   constructor (private router: Router) {}
 
-  data: any = data;
-
-  routerRedir(where: string) {
-    this.router.navigate([`readings/${where}`]);
-  }
-
   ngOnInit(): void {
-    
+
   }
 }

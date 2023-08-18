@@ -1,4 +1,4 @@
-export var data = {
-    "username": null,
-    "pass": null
+export var loginData: {deviceId: string, username: string | null} = {
+    deviceId: "",
+    username: null
 }

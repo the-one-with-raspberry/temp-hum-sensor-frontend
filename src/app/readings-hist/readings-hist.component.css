@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+
+.btn-group input label {
+    background-color: #ccc;
+    /* Green background */
+    border: 1px solid #ccc;
+    border-radius: 100px;
+    /* Green border */
+    color: white;
+    /* White text */
+    padding: 10px 24px;
+    /* Some padding */
+    cursor: pointer;
+    /* Pointer/hand icon */
+    float: left;
+    /* Float the inputs side by side */
+}
+
+.btn-group input:not(:last-child) {
+    border-right: none;
+    /* Prevent double borders */
+}
+
+/* Clear floats (clearfix hack) */
+.btn-group:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+/* Add a background color on hover */
+.btn-group input:hover {
+    background-color: #666;
+}
+
+* {
+    font-family: 'Nunito', sans-serif;
+}

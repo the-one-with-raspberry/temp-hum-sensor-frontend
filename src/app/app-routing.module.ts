@@ -3,8 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { ReadingsComponent } from './readings/readings.component';     // Add your component here
 import { ReadingsHistComponent } from './readings-hist/readings-hist.component';
 import { HomeComponent } from './home/home.component';
+import { ErrorComponent } from './error/error.component';
 
-//This is my case 
 const routes: Routes = [
     {
         path: 'readings/hist',
@@ -17,6 +17,10 @@ const routes: Routes = [
     {
         path: '',
         component: HomeComponent
+    },
+    {
+        path: 'error',
+        component: ErrorComponent
     }
 ];
 

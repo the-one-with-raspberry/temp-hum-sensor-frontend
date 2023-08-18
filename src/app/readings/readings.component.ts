@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { TemphumsensorService } from '../service/http/temphumsensor.service';
-const quark = require('@berriz44/quark');
 
 @Component({
   selector: 'app-readings',
@@ -34,12 +33,5 @@ export class ReadingsComponent implements OnInit {
     if (h) {
       h.innerText = response.content.humidity.value.toFixed(1);
     }
-  }
-
-  getInfoH() {
-    this.ths.getHistInfo("").subscribe(res => this.handleSuccessfulResponseH(res));
-  }
-  handleSuccessfulResponseH(res: any) {
-    
   }
 }
