@@ -5,6 +5,7 @@ import Chart from 'chart.js/auto';
 import { HistoryArray } from '../history-array';
 import * as quark from '../quark';
 import faicons from '../fa-solid.json';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-readings-hist',
@@ -13,11 +14,10 @@ import faicons from '../fa-solid.json';
 })
 export class ReadingsHistComponent implements OnInit {
 
-  constructor(private ths: TemphumsensorService) { }
+  constructor(private ths: TemphumsensorService, private router: Router) { }
 
   ngOnInit(): void {
     this.getInfoH();
-
   }
   getInfoH() {
     const checkedOpt = document.querySelector<HTMLInputElement>('input[name="timeselect"]:checked');
@@ -42,10 +42,7 @@ export class ReadingsHistComponent implements OnInit {
   }
   handleSuccessfulResponseH(res: any) {
     try {
-      const content = res.content;
-      const humArr: any[][] = content.humidity.value;
-      const tempArr: any[][] = content.celsius.value;
-      const farenArr: any[][] = content.farenheit.value;
+      const content: {celsius: number, fahrenheit: number, humidity: number, timestamp: string}[] = res.content;
       const selTime = (document.querySelector('input[name="timeselect"]:checked') as HTMLElement).dataset['value'];
       /**
        * @example dataset = arrTimes(60 * 60 * 24, 60 * 60);
@@ -55,15 +52,16 @@ export class ReadingsHistComponent implements OnInit {
        */
       function arrTimes(time: number, diff: number): HistoryArray {
         let out: HistoryArray = { hum: [], celsius: [], faren: [], dates: [] };
-        for (let i = 0; i < humArr.length; i++) {
-          if (time % diff == 0) {
-            out.hum.push(humArr[i][0]);
-            out.celsius.push(tempArr[i][0])
-            out.faren.push(farenArr[i][0])
-            out.dates.push(new Date(tempArr[i][1]))
-          } else if (i > time) {
+        for (let i = 0; i < content.length; i++) {
+          if (i > time) {
             break;
           }
+          if (time % diff == 0) {
+            out.hum.push(content[i].humidity);
+            out.celsius.push(content[i].celsius)
+            out.faren.push(content[i].fahrenheit)
+            out.dates.push(new Date(content[i].timestamp))
+          } 
         }
         return out;
       }
@@ -153,12 +151,7 @@ export class ReadingsHistComponent implements OnInit {
         elements[1].style.display = 'block';
       }
     } catch (err: any) {
-      document.querySelector<HTMLHeadingElement>("#hoficon")!.innerText = document.querySelector<HTMLHeadingElement>("#hoficon")!.innerText.replace("The server is doing its magic...", "Oops! Something bad happened!")
-      const lmt = document.createElement('p')
-      lmt.style.fontFamily = 'monospace';
-      lmt.style.color = 'red';
-      lmt.innerText = err;
-      document.querySelector<HTMLHeadingElement>("#hoficon")!.insertBefore(lmt, document.querySelector<HTMLElement>('#emptyspace2')!)
+      this.router.navigateByUrl("/error?error=" + err)
     }
   }
 }

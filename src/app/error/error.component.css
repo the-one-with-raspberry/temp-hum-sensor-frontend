@@ -1,0 +1,16 @@
+@font-face {
+    font-family: "Meslo Regular";
+    src: url("../fonts/MesloMonospace.ttf") format("ttf");
+}
+
+.errDiv {
+    width: 75%;
+    margin: auto;
+    text-align: center;
+    padding: 20% 0;
+    height: 100vh;
+}
+h3 {
+    color: rgb(255, 20, 20);
+    font-family: "Meslo Regular", monospace;
+}
