@@ -5,6 +5,7 @@ import Chart from 'chart.js/auto';
 import { HistoryArray } from '../history-array';
 import * as quark from '../quark';
 import faicons from '../fa-solid.json';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-readings-hist',
@@ -13,7 +14,7 @@ import faicons from '../fa-solid.json';
 })
 export class ReadingsHistComponent implements OnInit {
 
-  constructor(private ths: TemphumsensorService) { }
+  constructor(private ths: TemphumsensorService, private router: Router) { }
 
   ngOnInit(): void {
     this.getInfoH();
@@ -150,12 +151,7 @@ export class ReadingsHistComponent implements OnInit {
         elements[1].style.display = 'block';
       }
     } catch (err: any) {
-      document.querySelector<HTMLHeadingElement>("#hoficon")!.innerText = document.querySelector<HTMLHeadingElement>("#hoficon")!.innerText.replace("The server is doing its magic...", "Oops! Something bad happened!")
-      const lmt = document.createElement('p')
-      lmt.style.fontFamily = 'monospace';
-      lmt.style.color = 'red';
-      lmt.innerText = err;
-      document.querySelector<HTMLHeadingElement>("#hoficon")!.insertBefore(lmt, document.querySelector<HTMLElement>('#emptyspace2')!)
+      this.router.navigateByUrl("/error?error=" + err)
     }
   }
 }
