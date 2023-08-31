@@ -11,7 +11,7 @@ export class TemphumsensorService {
 
   apiVer: string = '1';
 
-  baseUrl: string = platform === 'linux' ? `http://localhost:5000/api/v${this.apiVer}` : `http://192.168.68.70:5000/api/v${this.apiVer}`;
+  baseUrl: string = `http://192.168.68.70:5000/api/v${this.apiVer}`;
 
   getInfo() {
     return this.hc.get<any>(`${this.baseUrl}/current/getInfo`);

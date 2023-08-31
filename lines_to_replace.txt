@@ -1,0 +1,1 @@
+src/app/service/http/temphumsensor.service.ts: (14) [  baseUrl: string = `http://127.0.0.1:5000/api/v${this.apiVer}`;]
