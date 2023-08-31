@@ -4,6 +4,7 @@ import { ReadingsComponent } from './readings/readings.component';     // Add yo
 import { ReadingsHistComponent } from './readings-hist/readings-hist.component';
 import { HomeComponent } from './home/home.component';
 import { ErrorComponent } from './error/error.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 const routes: Routes = [
     {
@@ -16,11 +17,16 @@ const routes: Routes = [
     },
     {
         path: '',
-        component: HomeComponent
+        component: HomeComponent,
+        pathMatch: 'full'
     },
     {
         path: 'error',
         component: ErrorComponent
+    },
+    {
+        path: '**',
+        component: NotFoundComponent
     }
 ];
 

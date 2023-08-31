@@ -16,9 +16,9 @@ export class TemphumsensorService {
   getInfo() {
     return this.hc.get<any>(`${this.baseUrl}/current/getInfo`);
   }
-  getHistInfo(time: string) {
+  getHistInfo(time: string, interval: number | string) {
     if (time != undefined) {
-      return this.hc.get<any>(`${this.baseUrl}/hist/getInfo?time=${time}`);
+      return this.hc.get<any>(`${this.baseUrl}/hist/getInfo?time=${time}&interval=${interval}`);
     } else {
       throw new Error('Invalid time parameter.');
     }
