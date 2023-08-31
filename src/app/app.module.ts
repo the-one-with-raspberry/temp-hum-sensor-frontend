@@ -9,6 +9,7 @@ import { HomeComponent } from './home/home.component'
 import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorComponent } from './error/error.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { ErrorComponent } from './error/error.component';
     ReadingsHistComponent,
     HomeComponent,
     ErrorComponent,
+    NotFoundComponent
   ],
   imports: [
     HttpClientModule,

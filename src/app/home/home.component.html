@@ -4,5 +4,5 @@
 <br>
 <a routerLink="readings/current">Current temperature</a>
 <br>
-<a routerLink="readings/hist">Historic temperature</a>
+<a [routerLink]="['readings/hist']" [queryParams]="{time: '1d'}">Historic temperature</a>
 <router-outlet></router-outlet>

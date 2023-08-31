@@ -5,7 +5,7 @@ import Chart from 'chart.js/auto';
 import { HistoryArray } from '../history-array';
 import * as quark from '../quark';
 import faicons from '../fa-solid.json';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-readings-hist',
@@ -14,23 +14,69 @@ import { Router } from '@angular/router';
 })
 export class ReadingsHistComponent implements OnInit {
 
-  constructor(private ths: TemphumsensorService, private router: Router) { }
+  constructor(private ths: TemphumsensorService, private router: Router, private route: ActivatedRoute) { }
+
+  selectedOpt: string | null = (()=>{
+    let out: string = '';
+    this.route.queryParams.subscribe({
+      next: (params)=>{
+        out = params['time'];
+      }
+    })
+    return out == '' ? '1d' : out;
+  })()
 
   ngOnInit(): void {
+    if (eval(`${sessionStorage.getItem('refresh')}`)) {
+      sessionStorage.setItem('refresh', 'false');
+    }
+    document.querySelector('input[name="timeselect"]:checked')!.removeAttribute("checked");
+    document.querySelector(`[data-value="${this.selectedOpt! ? this.selectedOpt! : "1d"}"]`)!.setAttribute("checked", "");
+    console.log(this.selectedOpt);
     this.getInfoH();
   }
   getInfoH() {
-    const checkedOpt = document.querySelector<HTMLInputElement>('input[name="timeselect"]:checked');
+    let checkedOpt = document.querySelector<HTMLInputElement>('input[name="timeselect"]:checked');
     document.getElementById('icon-asdf')!.setAttribute('class', `fa fa-${faicons[Math.floor(Math.random() * faicons.length)]} fa-spin fa-2xl`)
+    document.getElementById('hoficon')!.style.display = 'block';
     setInterval(() => {
       let f = document.createElement("i")
       document.querySelector('#hoficon')!.removeChild(document.getElementById('icon-asdf')!)
       f.setAttribute('class', `fa fa-${faicons[Math.floor(Math.random() * faicons.length)]} fa-spin fa-2xl`)
       f.setAttribute('id', 'icon-asdf')
       document.getElementById('hoficon')!.insertBefore(f, document.querySelector('#emptyspace1')!)
-    }, 2000)
-    this.ths.getHistInfo(checkedOpt!.dataset['value']!).subscribe({
-      next: (res) => { this.handleSuccessfulResponseH(res) }, error: (err) => {
+    }, 2000);
+    this.ths.getHistInfo(checkedOpt!.dataset['value']!, (() => {
+      switch (checkedOpt!.dataset['value']!) {
+        case '1d':
+          return 60;
+        case '1w':
+          return 60 * 24;
+        case '1m':
+          return 60 * 60 * 24;
+        case '1y':
+          return 60 * 60 * 24 * 12;
+        case '5y':
+          return 60 * 60 * 24 * 12;
+        case 'all':
+          return 60 * 60 * 24 * 12;
+        default:
+          return '';
+      }
+    })()).subscribe({
+      next: (res) => {
+        this.handleSuccessfulResponseH(res);
+        let changeDatesInterval = setInterval(() => {
+          const checkedOptOld = checkedOpt;
+          checkedOpt = document.querySelector<HTMLInputElement>('input[name="timeselect"]:checked');
+          if (checkedOptOld != checkedOpt) {
+            sessionStorage.setItem("refresh", "true");
+            this.router.navigate([`/readings/hist`], { queryParams: { time: checkedOpt!.getAttribute("data-value") } })
+            clearInterval(changeDatesInterval);
+          }
+        }, 50)
+        console.log(changeDatesInterval);
+      }, error: (err) => {
         document.querySelector<HTMLHeadingElement>("#hoficon")!.innerText = document.querySelector<HTMLHeadingElement>("#hoficon")!.innerText.replace("The server is doing its magic...", "Oops! Something bad happened!")
         const lmt = document.createElement('p')
         lmt.style.fontFamily = 'monospace';
@@ -39,29 +85,23 @@ export class ReadingsHistComponent implements OnInit {
         document.querySelector<HTMLHeadingElement>("#hoficon")!.insertBefore(lmt, document.querySelector<HTMLElement>('#emptyspace2')!)
       }
     });
+
   }
   handleSuccessfulResponseH(res: any) {
     try {
-      const content: {celsius: number, fahrenheit: number, humidity: number, timestamp: string}[] = res.content;
+      const content: { celsius: number, fahrenheit: number, humidity: number, timestamp: string }[] = res.content;
       const selTime = (document.querySelector('input[name="timeselect"]:checked') as HTMLElement).dataset['value'];
       /**
-       * @example dataset = arrTimes(60 * 60 * 24, 60 * 60);
-       * @param time How much time (in seconds) from last database log
-       * @param diff Interval of time
+       * @example dataset = arrTimes();
        * @returns HistoryArray of humidity and temperature information
        */
-      function arrTimes(time: number, diff: number): HistoryArray {
+      function arrTimes(): HistoryArray {
         let out: HistoryArray = { hum: [], celsius: [], faren: [], dates: [] };
-        for (let i = 0; i < content.length; i++) {
-          if (i > time) {
-            break;
-          }
-          if (time % diff == 0) {
-            out.hum.push(content[i].humidity);
-            out.celsius.push(content[i].celsius)
-            out.faren.push(content[i].fahrenheit)
-            out.dates.push(new Date(content[i].timestamp))
-          } 
+        for (let item of content) {
+          out.hum.push(item.humidity);
+          out.celsius.push(item.celsius)
+          out.faren.push(item.fahrenheit)
+          out.dates.push(new Date(item.timestamp))
         }
         return out;
       }
@@ -76,30 +116,30 @@ export class ReadingsHistComponent implements OnInit {
       let dataset: HistoryArray;
       switch (selTime) {
         case '1d':
-          dataset = arrTimes(60 * 60 * 24, 60 * 60);
+          dataset = arrTimes();
           break;
         case '1w':
-          dataset = arrTimes(60 * 60 * 24 * 7, 60 * 60 * 24);
+          dataset = arrTimes();
           break;
         case '1m':
-          dataset = arrTimes(60 * 60 * 24 * monthDays(), 60 * 60 * 24);
+          dataset = arrTimes();
           break;
         case '1y':
           if (leapYear()) {
-            dataset = arrTimes(60 * 60 * 24 * 366, 60 * 60 * 24)
+            dataset = arrTimes()
           } else {
-            dataset = arrTimes(60 * 60 * 24 * 365, 60 * 60 * 24)
+            dataset = arrTimes()
           }
           break;
         case '5y':
           if (leapYear()) {
-            dataset = arrTimes((60 * 60 * 24 * 366 * 2) + (60 * 60 * 24 * 365 * 3), 60 * 60 * 24)
+            dataset = arrTimes()
           } else {
-            dataset = arrTimes((60 * 60 * 24 * 366 * 1) + (60 * 60 * 24 * 365 * 4), 60 * 60 * 24)
+            dataset = arrTimes()
           }
           break;
         case 'all':
-          dataset = arrTimes(Date.now(), 60 * 60 * 24)
+          dataset = arrTimes()
           break;
         default:
           throw new Error('Invalid time range.')
@@ -112,7 +152,14 @@ export class ReadingsHistComponent implements OnInit {
             let out: string[] = []
             for (let item of dataset.dates) {
               out.push(
-                item.toTimeString().substring(0, 8).concat(", ", item.toDateString().substring(0, 3), ", ", item.toDateString().substring(4, 10), ", ", item.toDateString().substring(11))
+                // item.toTimeString().substring(0, 8).concat(", ", item.toDateString().substring(0, 3), ", ", item.toDateString().substring(4, 10), ", ", item.toDateString().substring(11))
+                (item.getHours() + ":" +
+                  (item.getMinutes().toString().length == 1 ? "0" + item.getMinutes() : item.getMinutes()) + ":" +
+                  (item.getSeconds().toString().length == 1 ? "0" + item.getSeconds() : item.getSeconds()) +
+                  ", " + item.toString().substring(8,10) + " " +
+                  item.toLocaleString('default', { month: 'short' }) + " " +
+                  item.getFullYear()
+                ).toString()
               )
             }
             return out;
@@ -150,7 +197,14 @@ export class ReadingsHistComponent implements OnInit {
         elements[0].style.display = 'none';
         elements[1].style.display = 'block';
       }
-    } catch (err: any) {
+      let changeDatesInterval = setInterval(() => {
+        let checkedOpt = document.querySelector<HTMLInputElement>('input[name="timeselect"]:checked');
+        if (!checkedOpt!.checked) { 
+          chart.destroy();
+          clearInterval(changeDatesInterval);
+        }
+      }, 4)
+      } catch (err: any) {
       this.router.navigateByUrl("/error?error=" + err)
     }
   }
