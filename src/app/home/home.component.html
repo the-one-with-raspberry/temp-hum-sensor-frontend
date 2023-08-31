@@ -1,0 +1,8 @@
+<h1>Welcome<span *ngIf="data.username">, {{data.username}}</span>!</h1>
+<br>
+<p>What do you want to see?</p>
+<br>
+<a routerLink="readings/current">Current temperature</a>
+<br>
+<a routerLink="readings/hist">Historic temperature</a>
+<router-outlet></router-outlet>
